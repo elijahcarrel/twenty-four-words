@@ -1,2 +1,2 @@
 # twenty-four-words
-Simple game built as a react native app
+Simple iOS/Android app built with React Native and Redux. Uses Google Firebase as a database.
