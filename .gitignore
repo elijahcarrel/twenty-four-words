@@ -66,4 +66,4 @@ buck-out/
 .env.production.local
 
 # secrets
-*/secrets.js
+**/secrets.js
