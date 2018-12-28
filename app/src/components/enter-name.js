@@ -37,7 +37,6 @@ class EnterNameContainerComponent extends React.Component {
         <Text style={styles.h1}>Enter your name.</Text>
         <View style={styles.textInputContainer}>
           <Input
-            // style={styles.textInput}
             textAlign="center"
             containerStyle={[styles.inputContainerStyle]}
             autoFocus

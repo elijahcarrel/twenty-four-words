@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import { CommonButton } from 'components/common-button';
 import { Players } from "components/players"
-import { Input, Icon, Button } from 'react-native-elements';
 
 import { createNewGame } from "state/game";
 import { setPage } from "state/page";
+import { setTeam } from "state/user";
 
 class PlayersJoinPageComponent extends React.Component {
   constructor(props) {
@@ -20,8 +20,9 @@ class PlayersJoinPageComponent extends React.Component {
   };
 
   componentDidMount = () => {
-    const { createNewGame, clientId, name } = this.props;
+    const { createNewGame, clientId, name, setTeam } = this.props;
     createNewGame(clientId, name);
+    setTeam(0);
   };
 
   render = () => {
@@ -92,6 +93,7 @@ const mapStateToProps = ({
 const mapDispatchToProps = {
   createNewGame,
   setPage,
+  setTeam,
 };
 export const PlayersJoinPage = connect(
   mapStateToProps,

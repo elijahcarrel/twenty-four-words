@@ -1,6 +1,9 @@
 import * as server from "server/game";
 import { handleResponse } from "utils/handle-response";
 
+import { setTeam } from "state/user";
+import { setPage } from "state/page";
+
 export const actionTypes = {
   GET_NEW_GAME_ID: "game/GET_NEW_GAME_ID",
   SET_GAME: "game/SET_GAME",
@@ -25,7 +28,11 @@ export const gameState = (state = defaultState, action) => {
   }
 };
 
-
+export const setGameTeamAndPage = ({ gameId, gameCode, team }) => {
+  setGame({ gameId, gameCode });
+  setTeam(team);
+  setPage("players-join");
+};
 
 export const setGame = (game) => ({
   type: actionTypes.SET_GAME,
@@ -34,6 +41,12 @@ export const setGame = (game) => ({
 
 export const createNewGame = (clientId, name) => {
   return (dispatch) => {
-    server.createNewGame(clientId, name).then(handleResponse(dispatch, setGame));
+    server.createNewGame(clientId, name).then(handleResponse(dispatch, setGameTeamAndPage));
   }
 };
+
+export const joinGame = (gameCode, clientId, name) => {
+  return (dispatch) => {
+    server.joinGame(gameCode, clientId, name).then(handleResponse(dispatch, setGameTeamAndPage));
+  }
+}

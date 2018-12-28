@@ -18,7 +18,7 @@ class PlayersComponent extends React.Component {
 
   render = () => {
     const { players, team } = this.props;
-    return (<View style={styles.playerContainer}>
+    return (<View style={styles.playersContainer}>
       {
         players.map((player, index) => (
           <ListItem
@@ -30,6 +30,8 @@ class PlayersComponent extends React.Component {
               />}
             title={player.name}
             subtitle={player.team === team ? "Teammate" : "Opponent"}
+            containerStyle={styles.playerListItemContainer}
+            titleStyle={styles.playerTitle}
           />
         ))
       }
@@ -62,6 +64,12 @@ export const Players = connect(
 
 const styles = StyleSheet.create({
   playersContainer: {
-    flex: 1,
+    // flex: 1,
   },
+  playerListItemContainer: {
+    // flex: 1,
+  },
+  playerTitle: {
+    color: "black",
+  }
 });
