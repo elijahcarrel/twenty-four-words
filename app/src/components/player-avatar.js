@@ -17,18 +17,24 @@ const getInitials = (name) => {
 
 const PlayerAvatarComponent = (props) => {
   const { name, team, myTeam } = props;
-
+  let iconStyle = styles.otherTeam;
+  // Must check if it equals -1 before checking if it equals myTeam because if both are -1 then it should be grey.
+  if (team === -1) {
+    iconStyle = styles.noTeam;
+  } else if (team === myTeam) {
+    iconStyle = styles.myTeam;
+  }
   return (<Avatar
     size="small"
     rounded
     activeOpacity={0.7}
     title={getInitials(name)}
-    iconStyle={team === myTeam ? styles.myTeam : styles.otherTeam}
+    iconStyle={iconStyle}
   />);
 };
 
 const mapStateToProps = ({
-  userState: {
+  playerState: {
     team,
   }
 }) => ({
@@ -47,4 +53,7 @@ const styles = StyleSheet.create({
   myTeam: {
     backgroundColor: "green",
   },
+  noTeam: {
+    backgroundColor: "grey",
+  }
 });

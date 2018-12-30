@@ -1,52 +1,41 @@
 import * as server from "server/game";
-import { handleResponse } from "utils/handle-response";
-
-import { setTeam } from "state/user";
-import { setPage } from "state/page";
+import { handleResponse } from "../server/utils/handle-response";
 
 export const actionTypes = {
-  GET_NEW_GAME_ID: "game/GET_NEW_GAME_ID",
   SET_GAME: "game/SET_GAME",
 };
 
 const defaultState = {
-  gameCode: "",
   gameId: "",
 };
 
 export const gameState = (state = defaultState, action) => {
   switch (action.type) {
     case actionTypes.SET_GAME:
-      const { game: { gameCode, gameId } } = action;
+      const { gameId } = action;
       return {
         ...state,
         gameId,
-        gameCode,
       };
     default:
       return state;
   }
 };
 
-export const setGameTeamAndPage = ({ gameId, gameCode, team }) => {
-  setGame({ gameId, gameCode });
-  setTeam(team);
-  setPage("players-join");
+export const startGame = (roomId) => {
+  return (dispatch) => {
+    server.startGame(roomId).then(handleResponse(dispatch, setGameAndPage));
+  };
 };
 
-export const setGame = (game) => ({
+export const setGameAndPage = (gameId) => {
+  return (dispatch) => {
+    dispatch(setGame(gameId));
+    dispatch(setPage(pages.PLAY));
+  };
+};
+
+export const setGame = (gameId) => ({
   type: actionTypes.SET_GAME,
-  game,
+  gameId,
 });
-
-export const createNewGame = (clientId, name) => {
-  return (dispatch) => {
-    server.createNewGame(clientId, name).then(handleResponse(dispatch, setGameTeamAndPage));
-  }
-};
-
-export const joinGame = (gameCode, clientId, name) => {
-  return (dispatch) => {
-    server.joinGame(gameCode, clientId, name).then(handleResponse(dispatch, setGameTeamAndPage));
-  }
-}

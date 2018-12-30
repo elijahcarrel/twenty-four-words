@@ -9,25 +9,19 @@ import {
 import { CommonButton } from 'components/common-button';
 import { Players } from "components/players"
 
-import { createNewGame } from "state/game";
-import { setPage } from "state/page";
+import { createRoom, addRoomListener } from "state/room";
 import { setTeam } from "state/user";
+import { startGame } from "state/game";
 
-class PlayersJoinPageComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    // this.submitName = this.submitName.bind(this);
-  };
-
+class RoomContainerComponent extends React.Component {
   componentDidMount = () => {
-    const { createNewGame, clientId, name, setTeam } = this.props;
-    createNewGame(clientId, name);
-    setTeam(0);
+    const { roomId, addRoomListener } = this.props;
+    addRoomListener(roomId);
   };
-
+  
   render = () => {
-    const { gameCode, setPage } = this.props;
-    if (!gameCode) {
+    const { roomCode, roomId, users } = this.props;
+    if (!roomCode) {
       return (
         <View style={styles.activityIndicatorContainer}>
           <ActivityIndicator animating={true}/>
@@ -36,19 +30,19 @@ class PlayersJoinPageComponent extends React.Component {
     }
     return (
       <View style={styles.bodyContainer}>
-        <Text style={styles.h2}>Your game ID</Text>
-        <Text style={styles.h1}>{gameCode}</Text>
-        <Text style={styles.h2}>Tell other players to join this game ID.</Text>
-        <Players />
+        <Text style={styles.h2}>Your game code</Text>
+        <Text style={styles.h1}>{roomCode}</Text>
+        <Text style={styles.h2}>Tell other players to join this game code.</Text>
+        <Players players={users}/>
         <Text style={styles.h2}>Once everyone has joined, click start to begin.</Text>
         <CommonButton
           title="Start Game"
-          onPress={() => setPage("add-words")}
+          onPress={() => startGame(roomId)}
         />
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   h1: {
@@ -78,24 +72,23 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = ({
-  gameState: {
-    gameCode,
+  roomState: {
+    roomId,
+    roomCode,
+    users,
   },
-  userState: {
-    clientId,
-    name,
-  }
 }) => ({
-  gameCode,
-  clientId,
-  name,
+  roomId,
+  roomCode,
+  users,
 });
 const mapDispatchToProps = {
-  createNewGame,
-  setPage,
+  createRoom,
   setTeam,
+  startGame,
+  addRoomListener,
 };
-export const PlayersJoinPage = connect(
+export const RoomContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(PlayersJoinPageComponent);
+)(RoomContainerComponent);

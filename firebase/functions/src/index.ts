@@ -1,45 +1,70 @@
-/**
- * Copyright 2017 Google Inc. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * From https://github.com/firebase/functions-samples/blob/Node-8/delete-old-child-nodes/functions/index.js
- */
 'use strict';
 
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+import * as firebaseHelper from 'firebase-functions-helper';
+import * as express from 'express';
+import * as bodyParser from 'body-parser';
+admin.initializeApp(functions.config().firebase);
+const db = admin.firestore();
+const app = express();
+const main = express();
+main.use('/api/v1', app);
+main.use(bodyParser.json());
+main.use(bodyParser.urlencoded({ extended: false }));
+// webApi is your functions name, and you will pass main as
+// a parameter
+export const webApi = functions.https.onRequest(main);
 
-// Cut off time. Game-codes older than this will be deleted.
-const CUT_OFF_TIME = 2 * 60 * 60 * 1000; // 2 Hours in milliseconds.
-
-/**
- * This database triggered function will check for child nodes that are older than the
- * cut-off time. Each child needs to have a `timestamp` attribute.
- */
-exports.deleteOldItems = functions.database.ref('/gamecodes/{pushId}').onWrite(async (change) => {
-  const ref = change.after.ref.parent; // reference to the parent
-  const now = Date.now();
-  const cutoff = now - CUT_OFF_TIME;
-  const oldItemsQuery = ref.orderByChild('timestamp').endAt(cutoff);
-  const snapshot = await oldItemsQuery.once('value');
-  // create a map with all children that need to be removed
-  const updates = {};
-  snapshot.forEach(child => {
-    updates[child.key] = null;
-  });
-  // execute all updates in one go and return the result to end the function
-  return ref.update(updates);
+app.put('/rooms/:roomId/start', async (req, res) => {
+  const roomId = req.params.roomId;
+  const roomDoc = await firebaseHelper.firestore
+  .getDocument(db, 'rooms', roomId);
+  if (!roomDoc.exists) {
+    res.status(404).send({error: `Could not find room ${roomId}.`});
+    return;
+  }
+  let gameRef = roomDoc.data().game;
+  // TODO(ecarrel): fix race condition where two people press start at same time. Probably better to put all of this
+  // in a transaction.
+  if (gameRef === undefined) {
+    gameRef = db.collection('games').doc().set({
+      createTime: firebaseHelper.firestore.FieldValue.serverTimestamp(),
+    });
+    const usersInRoom = await db.collection('users')
+    .where('room', '==', roomId)
+    .get();
+    if (!usersInRoom) {
+      res.status(400).send({error: "Unknown DB error."});
+      return;
+    }
+    const {docs} = usersInRoom;
+    if (docs.length !== 4) {
+      res.status(400).send({error: `Currently, 24words only supports games of exactly four players.`});
+      return;
+    }
+    const batch = db.batch();
+    docs.forEach((user, i) => {
+      const playerRef = db.collection('players').doc();
+      batch.set(playerRef, {
+        game: gameRef.id,
+        user: user.id,
+        team: i % 2,
+      });
+    });
+    const roomRef = db.collection('rooms').doc(roomId);
+    batch.update(roomRef, {
+      game: gameRef.id,
+    });
+    const err = await batch.commit();
+    if (err) {
+      res.status(400).send({error: `Database error: ${err}.`});
+      return;
+    }
+    res.send(gameRef.id);
+    return;
+  } else {
+    res.status(400).send({error: `The game has already started.`});
+    return;
+  }
 });

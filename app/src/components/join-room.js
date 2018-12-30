@@ -9,46 +9,45 @@ import {
 import { CommonButton } from 'components/common-button';
 
 import { Input } from "react-native-elements";
-import { joinGame } from "state/game";
+import { joinRoom } from "state/room";
 
-class JoinGameContainerComponent extends React.Component {
+class JoinRoomContainerComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      gameCode: "",
+      roomCode: "",
     };
-    this.submitGameCode = this.submitGameCode.bind(this);
+    this.submitRoomCode = this.submitRoomCode.bind(this);
   };
 
-  submitGameCode = () => {
-    const { joinGame, clientId, name } = this.props;
-    const { gameCode } = this.state;
-    if (gameCode) {
-      joinGame(gameCode, clientId, name)
-      // TODO(ecarrel): put below line in joinGame.
+  submitRoomCode = () => {
+    const { joinRoom, clientId, name } = this.props;
+    const { roomCode } = this.state;
+    if (roomCode) {
+      joinRoom(roomCode, clientId, name)
     }
   };
 
   render = () => {
-    const { gameCode, setPage } = this.props;
+    const { roomCode } = this.props;
     return (
       <View style={styles.bodyContainer}>
-        <Text style={styles.h1}>Enter game ID</Text>
+        <Text style={styles.h1}>Enter game code</Text>
         <View style={styles.textInputContainer}>
           <Input
             // style={styles.textInput}
             textAlign="center"
             containerStyle={[styles.inputContainerStyle]}
             autoFocus
-            onChangeText={(gameCode) => this.setState({ gameCode })}
-            onSubmitEditing={this.submitGameCode}
-            value={gameCode}
+            onChangeText={(roomCode) => this.setState({ roomCode })}
+            onSubmitEditing={this.submitRoomCode}
+            value={roomCode}
             blurOnSubmit={false}
           />
         </View>
         <CommonButton
           title="Go"
-          onPress={this.submitGameCode}
+          onPress={this.submitRoomCode}
         />
       </View>
     );
@@ -94,9 +93,9 @@ const mapStateToProps = ({
   name,
 });
 const mapDispatchToProps = {
-  joinGame,
+  joinRoom,
 };
-export const JoinGameContainer = connect(
+export const JoinRoomContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(JoinGameContainerComponent);
+)(JoinRoomContainerComponent);

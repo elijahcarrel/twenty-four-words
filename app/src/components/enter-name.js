@@ -10,6 +10,7 @@ import { Input, Icon, Button } from 'react-native-elements';
 
 import { setName } from "state/user";
 import { setPage } from "state/page";
+import { pages } from "page-map";
 
 class EnterNameContainerComponent extends React.Component {
 
@@ -26,7 +27,7 @@ class EnterNameContainerComponent extends React.Component {
     const { name } = this.state;
     if (name) {
       setName(name);
-      setPage("main");
+      setPage(pages.MAIN);
     }
   };
 

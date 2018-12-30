@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 class HomeComponent extends React.Component {
   render = () => {
     const { page } = this.props;
-    const PageComponent = pageMap.get(page) || defaultPage;
+    const PageComponent = pageMap[page] || null;
     return (
       <View style={styles.homeContainer}>
         <StatusBar

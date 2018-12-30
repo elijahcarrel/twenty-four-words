@@ -18,3 +18,5 @@ const settings = {
   timestampsInSnapshots: true,
 };
 db.settings(settings);
+
+export const apiURL = `https://${firebaseConfig.authDomain}/api/v1`;

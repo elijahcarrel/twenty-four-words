@@ -17,42 +17,48 @@ class PlayersComponent extends React.Component {
   };
 
   render = () => {
-    const { players, team } = this.props;
+    const { players, myTeam } = this.props;
     return (<View style={styles.playersContainer}>
       {
-        players.map((player, index) => (
-          <ListItem
-            key={index}
-            leftElement={
-              <PlayerAvatar
-                name={player.name}
-                team={player.team}
-              />}
-            title={player.name}
-            subtitle={player.team === team ? "Teammate" : "Opponent"}
-            containerStyle={styles.playerListItemContainer}
-            titleStyle={styles.playerTitle}
-          />
-        ))
+        players.map(({ name, team = -1 }, index) => {
+          let subtitle = "Opponent";
+          // Must check if it equals -1 before checking if it equals myTeam since if both are -1 it should be blank.
+          if (team === -1) {
+            subtitle = "";
+          } else if (team === myTeam) {
+            subtitle = "Teammate";
+          }
+  
+          return (
+            <ListItem
+              key={index}
+              leftElement={
+                <PlayerAvatar
+                  name={name}
+                  team={team}
+                />}
+              title={name}
+              subtitle={subtitle}
+              containerStyle={styles.playerListItemContainer}
+              titleStyle={styles.playerTitle}
+            />
+          );
+        })
       }
     </View>);
   }
 }
 
 const mapStateToProps = ({
-  playersState: {
-    players,
-  },
-  userState: {
+  playerState: {
     team,
   },
-  gameState: {
-    gameId,
+  roomState: {
+    roomId,
   }
 }) => ({
-  players,
-  team,
-  gameId,
+  myTeam: team,
+  roomId,
 });
 const mapDispatchToProps = {
   getPlayers
