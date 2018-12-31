@@ -61,7 +61,7 @@ const mapStateToProps = ({
   roomId,
 });
 const mapDispatchToProps = {
-  getPlayers
+  getPlayers,
 };
 export const Players = connect(
   mapStateToProps,

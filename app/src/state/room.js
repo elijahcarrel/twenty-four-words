@@ -1,5 +1,5 @@
 import * as server from "server/room";
-import { handleResponse } from "utils/handle-response";
+import { handleResponse } from "./utils/handle-response";
 
 import { setTeam } from "state/user";
 import { setPage } from "state/page";
@@ -51,15 +51,15 @@ export const setRoomAndPage = ({ roomId, roomCode }) => {
   }
 };
 
-export const createRoom = (clientId, name) => {
+export const createRoom = () => {
   return (dispatch) => {
-    server.createRoom(clientId, name).then(handleResponse(dispatch, setRoomAndPage));
+    server.createRoom().then(handleResponse(dispatch, setRoomAndPage));
   }
 };
 
-export const joinRoom = (roomCode, clientId, name) => {
+export const joinRoom = (roomCode) => {
   return (dispatch) => {
-    server.joinRoom(roomCode, clientId, name).then(handleResponse(dispatch, setRoomAndPage));
+    server.joinRoom(roomCode).then(handleResponse(dispatch, setRoomAndPage));
   }
 };
 
@@ -74,8 +74,14 @@ export const getUsers = (roomId) => {
   }
 };
 
-export const addRoomListener = (roomId) => {
+export const subscribeToRoom = (roomId) => {
   return (dispatch) => {
-    server.addRoomListener(roomId, handleResponse(dispatch, setGame));
+    return server.subscribeToRoom(roomId, handleResponse(dispatch, setGame));
+  }
+};
+
+export const subscribeToUsers = (roomId) => {
+  return (dispatch) => {
+    return server.subscribeToUsers(roomId, handleResponse(dispatch, setUsers));
   }
 };

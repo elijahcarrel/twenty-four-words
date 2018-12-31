@@ -9,23 +9,28 @@ import {
 import { CommonButton } from 'components/common-button';
 import { Players } from "components/players"
 
-import { createRoom, addRoomListener } from "state/room";
-import { setTeam } from "state/user";
+import { createRoom, subscribeToRoom, subscribeToUsers } from "state/room";
 import { startGame } from "state/game";
+import { LoadingScreen } from "./loading-screen";
 
 class RoomContainerComponent extends React.Component {
+  
   componentDidMount = () => {
-    const { roomId, addRoomListener } = this.props;
-    addRoomListener(roomId);
+    const { roomId, subscribeToRoom } = this.props;
+    this.unsubscribeFromRoom = subscribeToRoom(roomId);
+    this.unsubscribeFromUsers = subscribeToUsers(roomId);
+  };
+  
+  componentWillUnmount = () => {
+    this.unsubscribeFromRoom && this.unsubscribeFromRoom();
+    this.unsubscribeFromUsers  && this.unsubscribeFromUsers();
   };
   
   render = () => {
     const { roomCode, roomId, users } = this.props;
     if (!roomCode) {
       return (
-        <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator animating={true}/>
-        </View>
+        <LoadingScreen />
       );
     }
     return (
@@ -61,14 +66,6 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
-
-  activityIndicatorContainer: {
-    backgroundColor: "#fff",
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-
 });
 
 const mapStateToProps = ({
@@ -84,9 +81,8 @@ const mapStateToProps = ({
 });
 const mapDispatchToProps = {
   createRoom,
-  setTeam,
   startGame,
-  addRoomListener,
+  subscribeToRoom,
 };
 export const RoomContainer = connect(
   mapStateToProps,

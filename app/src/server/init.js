@@ -1,22 +1,42 @@
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import * as secrets from './secrets';
+import { serverTimestamp } from "./utils/server-timestamp";
 
-// Initialize Firebase
-const firebaseConfig = {
-  apiKey: secrets.FIREBASE_API_KEY,
-  authDomain: "codenames-ec420.firebaseapp.com",
-  projectId: "codenames-ec420",
-  databaseURL: "https://codenames-ec420.firebaseio.com",
-  storageBucket: "codenames-ec420.appspot.com"
+const projectId = "codenames-ec420";
+const authDomain = `${projectId}.firebaseapp.com`;
+export let db, userId;
+
+export const initDbConnection = () => {
+  // Initialize Firebase
+  const firebaseConfig = {
+    apiKey: secrets.FIREBASE_API_KEY,
+    authDomain,
+    projectId,
+    databaseURL: `https://${projectId}.firebaseio.com`,
+    storageBucket: `${projectId}.appspot.com`
+  };
+  
+  const app = firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore(app);
+  
+  const settings = {
+    timestampsInSnapshots: true,
+  };
+  db.settings(settings);
+  
+  userId = createUser();
 };
 
-const app = firebase.initializeApp(firebaseConfig);
-export const db = firebase.firestore(app);
+export const apiURL = `https://${authDomain}/api/v1`;
 
-const settings = {
-  timestampsInSnapshots: true,
+export const createUser = async () => {
+  const { id } = await db.collection("users").add({
+    createTime: serverTimestamp(),
+  });
+  if (!id) {
+    console.error("Couldn't create user.");
+    return;
+  }
+  return id;
 };
-db.settings(settings);
-
-export const apiURL = `https://${firebaseConfig.authDomain}/api/v1`;

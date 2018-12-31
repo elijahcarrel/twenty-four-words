@@ -1,29 +1,30 @@
 import { db } from "./init"
 
-export const getPlayers = (gameId) => {
-  return db.collection("players")
+export const getPlayers = async (gameId) => {
+  const { docs } = await db.collection("players")
     .where("game", "==", `/game/${gameId}`)
-    .get()
-    .then(({ docs }) => {
-      return {
-        ok: true,
-        result: docs.map(qds => {
-          let name = "";
-          const userRef = qds.get("user");
-          if (userRef) {
-            userRef.get()
-              .then(res => {
-                name = res.data().name;
-              })
-              .catch(err => console.error("error getting user for player: ", err));
-          }
-          return {
-            name: name,
-            team: qds.get("team"),
-            clientId: qds.get("clientId"),
-          };
-        }),
-      };
-    })
-    .catch(err => console.error("error getting players: ", err));
+    .get();
+  if (!docs) {
+    console.error(`Error getting players for game ${gameId}.`);
+    return;
+  }
+  return docs.map(async qds => {
+    const userRef = qds.get("user");
+    if (!userRef) {
+      console.error(`Error getting user for player with id ${qds.get("id")}`);
+      return;
+    }
+    const user = await userRef.get();
+    if (!user) {
+      console.error(`Error getting user with id ${userRef.id}`);
+      return;
+    }
+    const name = user.data().name;
+    return {
+      name,
+      team: qds.get("team"),
+      id: qds.get("id"),
+      userId: userRef.id,
+    };
+  });
 };

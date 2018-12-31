@@ -1,5 +1,5 @@
 import * as server from "server/players";
-import { handleResponse } from "utils/handle-response";
+import { handleResponse } from "./utils/handle-response";
 
 export const actionTypes = {
   GET_PLAYERS: "players/GET_PLAYERS",

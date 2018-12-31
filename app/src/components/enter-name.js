@@ -6,9 +6,8 @@ import {
   Text,
 } from 'react-native';
 import { CommonButton } from 'components/common-button';
-import { Input, Icon, Button } from 'react-native-elements';
-
-import { setName } from "state/user";
+import { Input } from 'react-native-elements';
+import { saveName } from "state/user";
 import { setPage } from "state/page";
 import { pages } from "page-map";
 
@@ -23,10 +22,13 @@ class EnterNameContainerComponent extends React.Component {
   };
 
   submitName = () => {
-    const { setName, setPage } = this.props;
+    const { saveName, setPage } = this.props;
     const { name } = this.state;
     if (name) {
-      setName(name);
+      saveName(name);
+      console.log("About to call setPage with ", pages.MAIN);
+      console.log("setPage is ", setPage);
+      console.log("saveName is ", saveName);
       setPage(pages.MAIN);
     }
   };
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = {
-  setName,
+  saveName,
   setPage,
 };
 export const EnterNameContainer = connect(

@@ -1,9 +1,11 @@
+import { pages } from "../page-map";
+
 export const actionTypes = {
   SET_PAGE: "page/SET_PAGE",
 };
 
 const defaultState = {
-  page: "",
+  page: pages.ENTER_NAME,
 };
 
 export const pageState = (state = defaultState, action) => {

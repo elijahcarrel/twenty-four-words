@@ -1,4 +1,5 @@
-import {db} from "./init"
+import { db, userId } from "./init"
+import { serverTimestamp } from "./utils/server-timestamp";
 
 const generateRoomCode = () => {
   let text = "";
@@ -10,7 +11,7 @@ const generateRoomCode = () => {
 };
 
 const getValidRoomCode = () => {
-  // TODO(ecarrel): rewrite the database entirely so that it keeps track of all 26^4
+  // TODO(ecarrel): rewrite this logic entirely so that the database instead keeps track of all 26^4
   // possible game IDs and then we just order them by last used and pick the one least recently used.
   // If I ever break this then this function might might send infinite requests to firebase...
   const roomCode = generateRoomCode();
@@ -20,71 +21,91 @@ const getValidRoomCode = () => {
     .limit(1)
     .get()
     .then(({ empty }) => {
-      // console.log(`Just asked firebase if ${roomCode} was unique and it said: ${empty}.`);
+      // console.error(`Just asked firebase if ${roomCode} was unique and it said: ${empty}.`);
       return empty ? roomCode : getValidRoomCode();
     });
 };
 
-export const createRoom = (clientId, name) => {
-  return getValidRoomCode().then(roomCode => {
-    return db.collection("rooms").add({
+export const createRoom = () => {
+  return getValidRoomCode().then(async roomCode => {
+    const { id } = await db.collection("rooms").add({
       code: roomCode,
       active: true,
-    })
-      .then(({ id }) => {
-        return createUser(id, roomCode, clientId, name);
+      createdBy: `/users/${userId}`,
+      createTime: serverTimestamp(),
     });
+    const success = addRoomToUser(id, roomCode);
+    if (!success) {
+      console.error("Error creating room.");
+      return;
+    }
+    return { roomId: id, roomCode };
   });
 };
 
-export const createUser = (roomId, roomCode, clientId, name) => {
-  return db.collection("users").add({
-    clientId,
-    name,
+export const addRoomToUser = async (roomId, roomCode) => {
+  const userRef = db.collection("users").doc(userId);
+  if (!userRef) {
+    console.error(`Couldn't get user with userId ${userId}.`);
+    return false;
+  }
+  const { id } = await userRef.update({
     room: `/room/${roomId}`,
-  }).then(() => ({
-    ok: true,
-    result: {
-      roomId,
-      roomCode,
-    },
-  }));
+  });
+  if (!id) {
+    console.error(`Error updating user with userId ${userId}.`);
+    return false;
+  }
+  return true;
 };
 
-export const joinRoom = (roomCode, clientId, name) => {
-  return db.collection("rooms")
+export const joinRoom = async (roomCode) => {
+  const {docs} = await db.collection("rooms")
     .where("code", "==", roomCode)
     .where("active", "==", true)
     .limit(1)
-    .get()
-    .then(({ docs }) => {
-      if (docs.length === 0) {
-        return {
-          ok: false,
-          result: { error: `Could not find game ${roomCode}.`},
-        };
-      }
-      const roomId = docs[0].get("id");
-      return createUser(roomId, roomCode, clientId, name);
-    });
+    .get();
+  if (docs.length === 0) {
+    console.error(`Could not find game ${roomCode}.`);
+    return;
+  }
+  const roomId = docs[0].get("id");
+  const success = addRoomToUser(roomId, roomCode);
+  if (!success) {
+    console.error("Error creating room.");
+    return;
+  }
+  return { roomId, roomCode };
 };
+
+const interpretUsers = (docs) => {
+  return {
+    ok: true,
+    result: docs.map(qds => ({
+      name: qds.get("name"),
+      id: qds.get("id"),
+    })),
+  };
+}
 
 export const getUsers = (roomId) => {
   return db.collection("users")
     .where("room", "==", `/room/${roomId}`)
     .get()
-    .then(({ docs }) => {
-      return {
-        ok: true,
-        result: docs.map(qds => ({
-          name: qds.get("name"),
-          clientId: qds.get("clientId"),
-        })),
-      };
-    });
+    .then(({ docs }) => interpretUsers(docs));
 };
 
-export const addRoomListener = (roomId, callback) => {
+export const subscribeToUsers = (roomId, callback) => {
+  return db.collection("users")
+    .where("room", "==", `/room/${roomId}`)
+    .onSnapshot(
+      docs => callback(interpretUsers(docs)),
+      error => {
+        console.error(`Error adding room listener: ${error}.`)
+      });
+};
+
+export const subscribeToRoom = (roomId, callback) => {
   return db.collection("rooms").doc(roomId)
     .onSnapshot(doc => {
       const gameId = doc.data().game;
@@ -92,7 +113,7 @@ export const addRoomListener = (roomId, callback) => {
         callback(gameId);
       }
     }, error => {
-      console.log(`Error adding room listener: ${error}.`)
+      console.error(`Error adding room listener: ${error}.`)
     });
 };
 

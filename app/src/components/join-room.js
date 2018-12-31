@@ -4,7 +4,6 @@ import {
   StyleSheet,
   View,
   Text,
-  ActivityIndicator,
 } from 'react-native';
 import { CommonButton } from 'components/common-button';
 
@@ -21,10 +20,10 @@ class JoinRoomContainerComponent extends React.Component {
   };
 
   submitRoomCode = () => {
-    const { joinRoom, clientId, name } = this.props;
+    const { joinRoom } = this.props;
     const { roomCode } = this.state;
     if (roomCode) {
-      joinRoom(roomCode, clientId, name)
+      joinRoom(roomCode)
     }
   };
 
@@ -83,19 +82,10 @@ const styles = StyleSheet.create({
 
 });
 
-const mapStateToProps = ({
-  userState: {
-    clientId,
-    name,
-  }
-}) => ({
-  clientId,
-  name,
-});
 const mapDispatchToProps = {
   joinRoom,
 };
 export const JoinRoomContainer = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 )(JoinRoomContainerComponent);

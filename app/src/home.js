@@ -2,7 +2,7 @@
 import React from "react"
 
 import { AppBar } from "components/app-bar"
-import { pageMap, defaultPage } from "page-map"
+import { pageMap } from "page-map"
 
 import {
   StyleSheet,
@@ -15,7 +15,7 @@ import { connect } from 'react-redux';
 class HomeComponent extends React.Component {
   render = () => {
     const { page } = this.props;
-    const PageComponent = pageMap[page] || null;
+    const PageComponent = pageMap[page];
     return (
       <View style={styles.homeContainer}>
         <StatusBar
@@ -23,7 +23,7 @@ class HomeComponent extends React.Component {
           barStyle="light-content"
         />
         <AppBar />
-        <PageComponent />
+        {PageComponent && (<PageComponent />)}
       </View>
     );
   }

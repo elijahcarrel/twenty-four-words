@@ -9,7 +9,6 @@ import { PlayerAvatar } from "components/player-avatar";
 
 const AppBarComponent = (props) => {
   const { name, team } = props;
-  console.log("in AppBarComponent and name is:", name);
   return (
     <View style={styles.appBarContainer}>
       <Text style={styles.appNameText}># 24words</Text>

@@ -1,4 +1,5 @@
-import uuid from "uuid";
+import * as server from "../server/user";
+import {handleResponse} from "./utils/handle-response";
 
 export const actionTypes = {
   SET_NAME: "user/SET_NAME",
@@ -6,7 +7,6 @@ export const actionTypes = {
 
 const defaultState = {
   name: "",
-  clientId: uuid.v4(),
 };
 
 export const userState = (state = defaultState, action) => {
@@ -26,3 +26,9 @@ export const setName = (name) => ({
   type: actionTypes.SET_NAME,
   name,
 });
+
+export const saveName = (name) => {
+  return (dispatch) => {
+    server.saveName(name).then(handleResponse(dispatch, setName));
+  }
+};
