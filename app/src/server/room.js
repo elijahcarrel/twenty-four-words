@@ -1,5 +1,6 @@
 import { db, userId } from "./init"
 import { serverTimestamp } from "./utils/server-timestamp";
+import {wrapError, wrapResult} from "./utils/wrapping";
 
 const generateRoomCode = () => {
   let text = "";
@@ -26,37 +27,34 @@ const getValidRoomCode = () => {
     });
 };
 
-export const createRoom = () => {
-  return getValidRoomCode().then(async roomCode => {
-    const { id } = await db.collection("rooms").add({
-      code: roomCode,
-      active: true,
-      createdBy: `/users/${userId}`,
-      createTime: serverTimestamp(),
-    });
-    const success = addRoomToUser(id, roomCode);
-    if (!success) {
-      console.error("Error creating room.");
-      return;
-    }
-    return { roomId: id, roomCode };
+// TODO(ecarrel): everywhere here and below, I need to fix the object handling.
+export const createRoom = async () => {
+  const roomCode = await getValidRoomCode();
+  const { id } = await db.collection("rooms").add({
+    code: roomCode,
+    active: true,
+    createdBy: `/users/${userId}`,
+    createTime: serverTimestamp(),
   });
+  const { ok, error } = addRoomToUser(id, roomCode);
+  if (ok) {
+    return wrapError(`Error creating room (${error}).`);
+  }
+  return wrapResult({ roomId: id, roomCode });
 };
 
 export const addRoomToUser = async (roomId, roomCode) => {
   const userRef = db.collection("users").doc(userId);
   if (!userRef) {
-    console.error(`Couldn't get user with userId ${userId}.`);
-    return false;
+    return wrapError(`Couldn't get user with userId ${userId}.`);
   }
   const { id } = await userRef.update({
     room: `/room/${roomId}`,
   });
   if (!id) {
-    console.error(`Error updating user with userId ${userId}.`);
-    return false;
+    return wrapError(`Error updating user with userId ${userId}.`);
   }
-  return true;
+  return wrapResult({});
 };
 
 export const joinRoom = async (roomCode) => {
@@ -70,12 +68,11 @@ export const joinRoom = async (roomCode) => {
     return;
   }
   const roomId = docs[0].get("id");
-  const success = addRoomToUser(roomId, roomCode);
-  if (!success) {
-    console.error("Error creating room.");
-    return;
+  const { ok, error } = addRoomToUser(id, roomCode);
+  if (ok) {
+    return wrapError(`Error creating room (${error}).`);
   }
-  return { roomId, roomCode };
+  return wrapResult({ roomId, roomCode });
 };
 
 const interpretUsers = (docs) => {
@@ -88,11 +85,11 @@ const interpretUsers = (docs) => {
   };
 }
 
-export const getUsers = (roomId) => {
-  return db.collection("users")
+export const getUsers = async (roomId) => {
+  const { docs } = await db.collection("users")
     .where("room", "==", `/room/${roomId}`)
-    .get()
-    .then(({ docs }) => interpretUsers(docs));
+    .get();
+  return interpretUsers(docs);
 };
 
 export const subscribeToUsers = (roomId, callback) => {
@@ -100,9 +97,9 @@ export const subscribeToUsers = (roomId, callback) => {
     .where("room", "==", `/room/${roomId}`)
     .onSnapshot(
       docs => callback(interpretUsers(docs)),
-      error => {
-        console.error(`Error adding room listener: ${error}.`)
-      });
+      error =>
+        wrapError(`Error adding room listener: ${error}.`)
+      );
 };
 
 export const subscribeToRoom = (roomId, callback) => {
@@ -112,9 +109,9 @@ export const subscribeToRoom = (roomId, callback) => {
       if (gameId !== undefined) {
         callback(gameId);
       }
-    }, error => {
-      console.error(`Error adding room listener: ${error}.`)
-    });
+    }, error =>
+      wrapError(`Error adding room listener: ${error}.`)
+    );
 };
 
 // returns the gameId

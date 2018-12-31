@@ -1,6 +1,7 @@
 import { putJson } from "./utils/fetching";
 import { db, userId } from "./init";
 import { serverTimestamp } from "./utils/server-timestamp";
+import {wrapError, wrapResult} from "./utils/wrapping";
 
 export const startGame = (roomId) => {
   return putJson(`/rooms/${roomId}/start`);
@@ -14,36 +15,35 @@ export const addWord = async (word, gameId) => {
     createTime: serverTimestamp(),
   });
   if (!id) {
-    console.error(`Error adding word ${word}.`);
-    return;
+    return wrapError(`Error adding word ${word}.`);
   }
-  return getWords(gameId);
+  return wrapResult(getWords(gameId));
 };
 
 const interpretWords = (docs) => {
-  return {
-    ok: true,
-    result: docs.map(async qds => {
-      const userRef = qds.get("createdBy");
-      if (!userRef) {
-        console.error("Error getting createdBy field of word.");
-        return;
-      }
-      const user = await userRef.get();
-      const createdBy = user.data().name;
-      return {
-        word: qds.get("name"),
-        createdBy,
-      };
-    }),
-  };
+  const results = [];
+  docs.forEach(async qds => {
+    const userRef = qds.get("createdBy");
+    if (!userRef) {
+      // TODO(ecarrel): make sure that a return statement inside of a forEach does what I think it does... huh I think
+      // this doesn't work actually.
+      return wrapError("Error getting createdBy field of word.");
+    }
+    const user = await userRef.get();
+    const createdBy = user.data().name;
+    results.push({
+      word: qds.get("name"),
+      createdBy,
+    });
+  });
+  return wrapResult(results);
 };
 
-export const getWords = (gameId) => {
-  return db.collection("words")
+export const getWords = async (gameId) => {
+  const { docs } = await db.collection("words")
     .where("game", "==", `/games/${gameId}`)
-    .get()
-    .then(({ docs }) => interpretWords(docs));
+    .get();
+  return interpretWords(docs);
 };
 
 export const subscribeToWords = (gameId, callback) => {
@@ -51,7 +51,6 @@ export const subscribeToWords = (gameId, callback) => {
     .where("game", "==", `/games/${gameId}`)
     .onSnapshot(
       docs => callback(interpretWords(docs)),
-      error => {
-        console.error(`Error adding room listener: ${error}.`)
-      });
+      error => wrapError(`Error adding room listener: ${error}.`),
+     );
 };

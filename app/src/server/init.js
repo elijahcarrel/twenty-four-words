@@ -2,6 +2,7 @@ import * as firebase from 'firebase';
 import 'firebase/firestore';
 import * as secrets from './secrets';
 import { serverTimestamp } from "./utils/server-timestamp";
+import {wrapError, wrapResult} from "./utils/wrapping";
 
 const projectId = "codenames-ec420";
 const authDomain = `${projectId}.firebaseapp.com`;
@@ -25,7 +26,10 @@ export const initDbConnection = () => {
   };
   db.settings(settings);
   
-  userId = createUser();
+  const { ok, result } = createUser();
+  if (ok) {
+    userId = result.userId;
+  }
 };
 
 export const apiURL = `https://${authDomain}/api/v1`;
@@ -35,8 +39,7 @@ export const createUser = async () => {
     createTime: serverTimestamp(),
   });
   if (!id) {
-    console.error("Couldn't create user.");
-    return;
+    return wrapError("Couldn't create user.");
   }
-  return id;
+  return wrapResult({ userId: id });
 };

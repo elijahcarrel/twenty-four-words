@@ -1,17 +1,16 @@
 import { db, userId } from "./init";
+import { wrapError, wrapResult } from "./utils/wrapping";
 
 export const saveName = async (name) => {
   const userRef = db.collection("users").doc(userId);
   if (!userRef) {
-    console.error(`Couldn't get user with userId ${userId}.`);
-    return false;
+    return wrapError(`Couldn't get user with userId ${userId}.`);
   }
   const { id } = await userRef.update({
     name,
   });
   if (!id) {
-    console.error(`Error updating user with userId ${userId}.`);
-    return false;
+    return wrapError(`Error updating user with userId ${userId}.`);
   }
-  return true;
+  return wrapResult({ name });
 };

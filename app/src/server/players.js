@@ -1,30 +1,30 @@
 import { db } from "./init"
+import { wrapError, wrapResult } from "./utils/wrapping";
 
 export const getPlayers = async (gameId) => {
   const { docs } = await db.collection("players")
     .where("game", "==", `/game/${gameId}`)
     .get();
   if (!docs) {
-    console.error(`Error getting players for game ${gameId}.`);
-    return;
+    return wrapError(`Error getting players for game ${gameId}.`);
   }
-  return docs.map(async qds => {
+  const results = [];
+  docs.forEach(async qds => {
     const userRef = qds.get("user");
     if (!userRef) {
-      console.error(`Error getting user for player with id ${qds.get("id")}`);
-      return;
+      return wrapError(`Error getting user for player with id ${qds.get("id")}`);
     }
     const user = await userRef.get();
     if (!user) {
-      console.error(`Error getting user with id ${userRef.id}`);
-      return;
+      return wrapError(`Error getting user with id ${userRef.id}`);
     }
     const name = user.data().name;
-    return {
+    results.push({
       name,
       team: qds.get("team"),
       id: qds.get("id"),
       userId: userRef.id,
-    };
+    });
   });
+  return wrapResult(results);
 };
