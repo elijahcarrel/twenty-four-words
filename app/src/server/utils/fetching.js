@@ -1,6 +1,6 @@
-import { apiURL } from "../init";
+import { apiURL } from "server/init";
 
-const fetchJson = (endpoint, obj, method) => {
+const fetchJson = (endpoint, obj = {}, method) => {
   return fetch(apiURL + endpoint, {
     method,
     headers: {
@@ -11,14 +11,14 @@ const fetchJson = (endpoint, obj, method) => {
   });
 };
 
-export const postJson = (endpoint, obj = {}) => {
+export const postJson = (endpoint, obj) => {
   return fetchJson(endpoint, obj, 'POST');
 };
 
-export const putJson = (endpoint, obj = {}) => {
+export const putJson = (endpoint, obj) => {
   return fetchJson(endpoint, obj, 'PUT');
 };
 
-export const getJson = (endpoint, obj = {}) => {
+export const getJson = (endpoint, obj) => {
   return fetchJson(endpoint, obj, 'GET');
 };

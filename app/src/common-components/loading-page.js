@@ -1,7 +1,7 @@
 import React from "react";
 import { ActivityIndicator, StyleSheet, View } from "react-native";
 
-export const LoadingScreen = () => {
+export const LoadingPage = () => {
   return (
     <View style={styles.activityIndicatorContainer}>
       <ActivityIndicator animating={true}/>

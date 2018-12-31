@@ -1,17 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-} from 'react-native';
-import { CommonButton } from 'components/common-button';
+import { CommonButton } from 'common-components/common-button';
 import { Players } from "components/players"
 
 import { createRoom, subscribeToRoom, subscribeToUsers } from "state/room";
 import { startGame } from "state/game";
-import { LoadingScreen } from "./loading-screen";
+import { LoadingPage } from "common-components/loading-page";
+import { CommonPage } from "common-components/common-page";
+import { HeaderText } from "common-components/header-text";
+import { SubheaderText } from "common-components/subheader-text";
 
 class RoomContainerComponent extends React.Component {
   
@@ -30,43 +27,24 @@ class RoomContainerComponent extends React.Component {
     const { roomCode, roomId, users } = this.props;
     if (!roomCode) {
       return (
-        <LoadingScreen />
+        <LoadingPage />
       );
     }
     return (
-      <View style={styles.bodyContainer}>
-        <Text style={styles.h2}>Your game code</Text>
-        <Text style={styles.h1}>{roomCode}</Text>
-        <Text style={styles.h2}>Tell other players to join this game code.</Text>
+      <CommonPage>
+        <SubheaderText>Your game code</SubheaderText>
+        <HeaderText>{roomCode}</HeaderText>
+        <SubheaderText>Tell other players to join this game code.</SubheaderText>
         <Players players={users}/>
-        <Text style={styles.h2}>Once everyone has joined, click start to begin.</Text>
+        <SubheaderText>Once everyone has joined, click start to begin.</SubheaderText>
         <CommonButton
           title="Start Game"
           onPress={() => startGame(roomId)}
         />
-      </View>
+      </CommonPage>
     );
   }
 };
-
-const styles = StyleSheet.create({
-  h1: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginTop: 10,
-  },
-
-  h2: {
-    marginTop: 5,
-    fontSize: 14,
-  },
-
-  bodyContainer: {
-    backgroundColor: '#ffffff',
-    padding: 20,
-    alignItems: 'center',
-  },
-});
 
 const mapStateToProps = ({
   roomState: {

@@ -5,7 +5,7 @@ import {
   View,
   Text,
 } from 'react-native';
-import { PlayerAvatar } from "components/player-avatar";
+import { PlayerAvatar } from "common-components/player-avatar";
 
 const AppBarComponent = (props) => {
   const { name, team } = props;
@@ -48,17 +48,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: "flex-end",
   },
-  nameTextContainer: {
-    flexDirection: "column",
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 20,
-  },
-  nameText: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: '#ffffff',
-  }
+  // nameTextContainer: {
+  //   flexDirection: "column",
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   height: 20,
+  // },
+  // nameText: {
+  //   fontSize: 15,
+  //   fontWeight: "bold",
+  //   color: '#ffffff',
+  // }
 });
 
 const mapStateToProps = ({

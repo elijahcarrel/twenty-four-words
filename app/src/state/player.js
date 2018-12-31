@@ -1,4 +1,4 @@
-export const actionTypes = {
+const actionTypes = {
   SET_TEAM: "player/SET_TEAM",
 };
 

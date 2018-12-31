@@ -9,7 +9,7 @@ export const startGame = async (req, res) => {
     sendClientError(res, `Could not find room ${roomId}.`);
     return;
   }
-  let gameRef = roomDoc.data().game;
+  let gameRef = roomDoc.get("game");
   if (gameRef !== undefined) {
     sendClientError(res, `The game has already started.`);
     return;

@@ -18,9 +18,8 @@ export const getPlayers = async (gameId) => {
     if (!user) {
       return wrapError(`Error getting user with id ${userRef.id}`);
     }
-    const name = user.data().name;
     results.push({
-      name,
+      name: user.get("name"),
       team: qds.get("team"),
       id: qds.get("id"),
       userId: userRef.id,

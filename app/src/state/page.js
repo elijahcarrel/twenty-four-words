@@ -1,23 +1,25 @@
-import { pages } from "../page-map";
+import { pageNames } from "page-names";
 
-export const actionTypes = {
+const actionTypes = {
   SET_PAGE: "page/SET_PAGE",
 };
 
 const defaultState = {
-  page: pages.ENTER_NAME,
+  page: pageNames.ENTER_NAME,
 };
 
 export const pageState = (state = defaultState, action) => {
   switch (action.type) {
-    case actionTypes.SET_PAGE:
+    case actionTypes.SET_PAGE: {
       const { page } = action;
       return {
         ...state,
         page,
       };
-    default:
+    }
+    default: {
       return state;
+    }
   }
 };
 
@@ -25,3 +27,5 @@ export const setPage = (page) => ({
   type: actionTypes.SET_PAGE,
   page,
 });
+
+console.log("In page.js and setPage is ", setPage);

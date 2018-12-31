@@ -2,7 +2,7 @@ import React from "react";
 
 import { ListItem } from 'react-native-elements'
 import { getPlayers } from "state/players";
-import { PlayerAvatar } from "components/player-avatar";
+import { PlayerAvatar } from "common-components/player-avatar";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 

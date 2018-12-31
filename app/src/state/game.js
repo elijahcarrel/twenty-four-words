@@ -1,17 +1,24 @@
 import * as server from "server/game";
 import { handleResponse } from "./utils/handle-response";
-import { pages } from "../page-map";
+import { pageNames } from "page-names";
 import { setPage } from "./page";
 import { setUsers } from "./room";
 
-export const actionTypes = {
+const actionTypes = {
   SET_GAME: "game/SET_GAME",
   SET_WORDS: "game/SET_WORDS",
 };
 
 const defaultState = {
   gameId: "",
-  words: [],
+  words: [{
+    word: "Foo",
+    createdBy: "Elijah",
+  },
+  {
+    word: "Bar",
+    createdBy: "Also Elijah",
+  }],
 };
 
 export const gameState = (state = defaultState, action) => {
@@ -45,7 +52,7 @@ export const startGame = (roomId) => {
 export const setGameAndPage = (gameId) => {
   return (dispatch) => {
     dispatch(setGame(gameId));
-    dispatch(setPage(pages.PLAY));
+    dispatch(setPage(pageNames.ADD_WORDS));
   };
 };
 

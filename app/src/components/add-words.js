@@ -12,8 +12,13 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import { addWord } from "state/game";
+import { LoadingPage } from "common-components/loading-page";
+import { CommonPage } from "common-components/common-page";
+import { HeaderText } from "common-components/header-text";
+import { SubheaderText } from "common-components/subheader-text";
+import { CommonButton } from "common-components/common-button";
 
-class AddWordsComponent extends Component {
+class AddWordsContainerComponent extends Component {
   constructor(props) {
     super(props);
 
@@ -24,11 +29,11 @@ class AddWordsComponent extends Component {
     this.addWordFromInput = this.addWordFromInput.bind(this);
   }
 
-  addWordFromInput() {
+  addWordFromInput = () => {
     const { addWord } = this.props;
     addWord(this.state.inputWord.trim());
     this.setState({ inputWord: "" });
-  }
+  };
 
   // handleTextChange(inputWord) {
   //   this.setState({inputWord: inputWord});
@@ -38,60 +43,54 @@ class AddWordsComponent extends Component {
   //   this.props.getData(); // Call our action
   // }
 
-  render() {
-    if (this.props.loading) {
+  render = () => {
+    const { loading, words } = this.props;
+    if (loading) {
+      console.log("Loading");
       return (
-        <View style={styles.activityIndicatorContainer}>
-          <ActivityIndicator animating={true}/>
-        </View>
+        <LoadingPage />
       );
     } else {
+      console.log("Not loading");
       return (
-        <View style={styles.bodyContainer}>
-          <Text style={styles.h1}>Add words to the pot.</Text>
+        <CommonPage>
+          <HeaderText>Add words to the pot.</HeaderText>
           <View style={styles.wordInputContainer}>
             <TextInput
               style={styles.wordInput}
-              textAlign={'center'}
+              textAlign="center"
               autoFocus
-              onChangeText={(inputWord) => this.setState({inputWord})}
+              onChangeText={(inputWord) => this.setState({ inputWord })}
               onSubmitEditing={this.addWordFromInput}
               value={this.state.inputWord}
               blurOnSubmit={false}
             />
           </View>
-          <Text style={styles.h2}>Words can be anything: people, places, things, inside jokes, etc.</Text>
-          <TouchableOpacity onPress={this.addWordFromInput}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>Add Word</Text>
-            </View>
-          </TouchableOpacity>
+          <SubheaderText>Words can be anything: people, places, things, inside jokes, etc.</SubheaderText>
+          <CommonButton
+            title="Add Word"
+            onPress={this.addWordFromInput}
+            disabled={!this.state.inputWord}
+          />
           <FlatList
             ref='listRef'
-            data={this.props.words}
-            renderItem={({ item, index }) => (
+            data={words}
+            renderItem={({ item: { word, createdBy }, index }) => (
               <View style={styles.row} textAlign={'center'}>
                 <Text style={styles.wordInRow}>
-                  {item}
+                  {word} (added by {createdBy})
                 </Text>
               </View>
             )}
             keyExtractor={ (item, index) => index.toString() }
           />
-        </View>
+        </CommonPage>
       );
     }
-  }
+  };
 };
 
 const styles = StyleSheet.create({
-  activityIndicatorContainer: {
-    backgroundColor: "#fff",
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-
   row: {
     borderBottomWidth: 1,
     borderColor: "#ccc",
@@ -100,44 +99,6 @@ const styles = StyleSheet.create({
 
   wordInRow: {
     fontSize: 16,
-  },
-
-  h1: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginTop: 10,
-  },
-
-  h2: {
-    marginTop: 5,
-    fontSize: 14,
-  },
-
-  button: {
-    marginTop: 10,
-    marginBottom: 30,
-    width: 260,
-    alignItems: 'center',
-    backgroundColor: '#2196F3',
-  },
-
-  buttonText: {
-    padding: 20,
-    color: 'white',
-    fontSize: 16,
-  },
-
-  headerText: {
-    paddingTop: 20,
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-
-  bodyContainer: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    padding: 20,
-    alignItems: 'center',
   },
 
   wordInput: {
@@ -164,7 +125,7 @@ const mapDispatchToProps = {
 };
 
 // Connect everything
-export const AddWords = connect(
+export const AddWordsContainer = connect(
   mapStateToProps,
   mapDispatchToProps,
-)(AddWordsComponent);
+)(AddWordsContainerComponent);

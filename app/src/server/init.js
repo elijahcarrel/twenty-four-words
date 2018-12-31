@@ -6,6 +6,7 @@ import {wrapError, wrapResult} from "./utils/wrapping";
 
 const projectId = "codenames-ec420";
 const authDomain = `${projectId}.firebaseapp.com`;
+export const apiURL = `https://${authDomain}/api/v1`;
 export let db, userId;
 
 export const initDbConnection = () => {
@@ -31,8 +32,6 @@ export const initDbConnection = () => {
     userId = result.userId;
   }
 };
-
-export const apiURL = `https://${authDomain}/api/v1`;
 
 export const createUser = async () => {
   const { id } = await db.collection("users").add({

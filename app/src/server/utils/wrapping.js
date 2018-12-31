@@ -4,7 +4,6 @@ export const wrapResult = (result) => ({
 });
 
 export const wrapError = (error) => {
-  console.error(error);
   return {
     ok: false,
     error,

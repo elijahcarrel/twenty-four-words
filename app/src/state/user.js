@@ -1,7 +1,7 @@
-import * as server from "../server/user";
-import {handleResponse} from "./utils/handle-response";
+import * as server from "server/user";
+import { handleResponse } from "./utils/handle-response";
 
-export const actionTypes = {
+const actionTypes = {
   SET_NAME: "user/SET_NAME",
 };
 

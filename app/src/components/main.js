@@ -1,39 +1,26 @@
 import React from "react";
 import { connect } from "react-redux";
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity
-} from 'react-native';
 import { setPage } from "state/page";
 import { createRoom } from "state/room";
-import { CommonButton } from 'components/common-button'
-import { pages } from "page-map";
+import { CommonButton } from 'common-components/common-button'
+import { pageNames } from "app/src/page-names";
+import { CommonPage } from "common-components/common-page";
 
 const MainContainerComponent = (props) => {
   const { setPage, createRoom } = props;
   return (
-    <View style={styles.bodyContainer}>
+    <CommonPage>
       <CommonButton
         title="Create Game"
         onPress={createRoom}
       />
       <CommonButton
         title="Join Game"
-        onPress={() => setPage(pages.JOIN)}
+        onPress={() => setPage(pageNames.JOIN)}
       />
-    </View>
+    </CommonPage>
   );
 };
-
-const styles = StyleSheet.create({
-  bodyContainer: {
-    backgroundColor: '#ffffff',
-    padding: 20,
-    alignItems: 'center',
-  },
-});
 
 const mapDispatchToProps = {
   setPage,

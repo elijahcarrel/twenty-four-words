@@ -3,18 +3,20 @@ import { handleResponse } from "./utils/handle-response";
 
 import { setTeam } from "state/user";
 import { setPage } from "state/page";
-import { pages } from "page-map";
+import { pageNames } from "app/src/page-names";
 import { setGame } from "./game";
 
-export const actionTypes = {
+const actionTypes = {
   SET_ROOM: "room/SET_ROOM",
   SET_USERS: "room/SET_USERS",
+  SET_ERROR: "room/SET_ERROR",
 };
 
 const defaultState = {
   roomCode: "",
   roomId: "",
   users: [],
+  error: "",
 };
 
 export const roomState = (state = defaultState, action) => {
@@ -34,6 +36,13 @@ export const roomState = (state = defaultState, action) => {
         users,
       };
     }
+    case actionTypes.SET_ERROR: {
+      const { error } = action;
+      return {
+        ...state,
+        error,
+      };
+    }
     default: {
       return state;
     }
@@ -47,7 +56,7 @@ export const setRoomAndPage = ({ roomId, roomCode }) => {
       roomId,
       roomCode,
     });
-    dispatch(setPage(pages.ROOM))
+    dispatch(setPage(pageNames.ROOM))
   }
 };
 
@@ -59,13 +68,18 @@ export const createRoom = () => {
 
 export const joinRoom = (roomCode) => {
   return (dispatch) => {
-    server.joinRoom(roomCode).then(handleResponse(dispatch, setRoomAndPage));
+    server.joinRoom(roomCode).then(handleResponse(dispatch, setRoomAndPage, showError));
   }
 };
 
 export const setUsers = (users) => ({
   type: actionTypes.SET_USERS,
   users,
+});
+
+const showError = (error) => ({
+  type: actionTypes.SET_ERROR,
+  error,
 });
 
 export const getUsers = (roomId) => {

@@ -1,25 +1,18 @@
 import React from "react";
 import { connect } from "react-redux";
-import { StyleSheet, Text, View } from 'react-native';
+import { Text } from 'react-native';
+import { CommonPage } from "common-components/common-page";
 
 class PlayContainerComponent extends React.Component {
   render = () => {
     const { gameId } = this.props;
     return (
-      <View style={styles.bodyContainer}>
+      <CommonPage>
         <Text>Woohoo we're playing game {gameId}.</Text>
-      </View>
+      </CommonPage>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  bodyContainer: {
-    backgroundColor: '#ffffff',
-    padding: 20,
-    alignItems: 'center',
-  },
-});
 
 const mapStateToProps = ({
   gameState: {

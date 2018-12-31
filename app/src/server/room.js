@@ -64,8 +64,7 @@ export const joinRoom = async (roomCode) => {
     .limit(1)
     .get();
   if (docs.length === 0) {
-    console.error(`Could not find game ${roomCode}.`);
-    return;
+    return wrapError(`Could not find game ${roomCode}.`);
   }
   const roomId = docs[0].get("id");
   const { ok, error } = addRoomToUser(id, roomCode);
@@ -105,7 +104,7 @@ export const subscribeToUsers = (roomId, callback) => {
 export const subscribeToRoom = (roomId, callback) => {
   return db.collection("rooms").doc(roomId)
     .onSnapshot(doc => {
-      const gameId = doc.data().game;
+      const gameId = doc.get("game");
       if (gameId !== undefined) {
         callback(gameId);
       }

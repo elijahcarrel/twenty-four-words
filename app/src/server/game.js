@@ -17,10 +17,11 @@ export const addWord = async (word, gameId) => {
   if (!id) {
     return wrapError(`Error adding word ${word}.`);
   }
-  return wrapResult(getWords(gameId));
+  return getWords(gameId);
 };
 
 const interpretWords = (docs) => {
+  console.log(`I'm being told to interpret words which are ${JSON.stringify(docs)}`);
   const results = [];
   docs.forEach(async qds => {
     const userRef = qds.get("createdBy");
@@ -30,7 +31,7 @@ const interpretWords = (docs) => {
       return wrapError("Error getting createdBy field of word.");
     }
     const user = await userRef.get();
-    const createdBy = user.data().name;
+    const createdBy = user.get("name");
     results.push({
       word: qds.get("name"),
       createdBy,
