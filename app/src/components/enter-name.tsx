@@ -1,15 +1,24 @@
 "use strict";
 import React from "react";
-import { CommonButton } from 'common-components/common-button';
-import { saveName } from "state/user";
-import { setPage } from "state/page";
-import { pageNames } from "page-names";
+import { CommonButton } from "~/common-components/common-button";
+import { saveName } from "~/state/user";
+import { setPage } from "~/state/page";
+import { pageNames } from "~/page-names";
 import { connect } from "react-redux";
-import { CommonPage } from "common-components/common-page";
-import { HeaderText } from "common-components/header-text";
+import { CommonPage } from "~/common-components/common-page";
+import { HeaderText } from "~/common-components/header-text";
 import { CommonInput } from "../common-components/common-input";
 
-class EnterNameContainerComponent extends React.Component {
+type Props = {
+  saveName: Function,
+  setPage: Function,
+}
+
+type State = {
+  name: string,
+}
+
+class EnterNameContainerComponent extends React.Component<Props, State> {
   state = {
     name: "",
   };
@@ -23,7 +32,7 @@ class EnterNameContainerComponent extends React.Component {
     }
   };
 
-  render = () => {
+  render() {
     const { name } = this.state;
     return (
       <CommonPage>

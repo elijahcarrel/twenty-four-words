@@ -1,6 +1,6 @@
 import { db, userId } from "./init"
 import { serverTimestamp } from "./utils/server-timestamp";
-import {wrapError, wrapResult} from "./utils/wrapping";
+import { wrapError, wrapResult } from "./utils/wrapping";
 
 const generateRoomCode = () => {
   let text = "";
@@ -36,14 +36,14 @@ export const createRoom = async () => {
     createdBy: `/users/${userId}`,
     createTime: serverTimestamp(),
   });
-  const { ok, error } = addRoomToUser(id, roomCode);
+  const { ok, error } = await addRoomToUser(id);
   if (ok) {
     return wrapError(`Error creating room (${error}).`);
   }
   return wrapResult({ roomId: id, roomCode });
 };
 
-export const addRoomToUser = async (roomId, roomCode) => {
+export const addRoomToUser = async (roomId) => {
   const userRef = db.collection("users").doc(userId);
   if (!userRef) {
     return wrapError(`Couldn't get user with userId ${userId}.`);
@@ -67,7 +67,7 @@ export const joinRoom = async (roomCode) => {
     return wrapError(`Could not find game ${roomCode}.`);
   }
   const roomId = docs[0].get("id");
-  const { ok, error } = addRoomToUser(id, roomCode);
+  const { ok, error } = await addRoomToUser(roomId);
   if (ok) {
     return wrapError(`Error creating room (${error}).`);
   }

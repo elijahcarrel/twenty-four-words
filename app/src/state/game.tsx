@@ -1,8 +1,7 @@
-import * as server from "server/game";
+import * as server from "~/server/game";
 import { handleResponse } from "./utils/handle-response";
-import { pageNames } from "page-names";
+import { pageNames } from "~/page-names";
 import { setPage } from "./page";
-import { setUsers } from "./room";
 
 const actionTypes = {
   SET_GAME: "game/SET_GAME",

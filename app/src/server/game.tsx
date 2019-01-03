@@ -3,8 +3,8 @@ import { db, userId } from "./init";
 import { serverTimestamp } from "./utils/server-timestamp";
 import {wrapError, wrapResult} from "./utils/wrapping";
 
-export const startGame = (roomId) => {
-  return putJson(`/rooms/${roomId}/start`);
+export const startGame = async (roomId) => {
+  return await putJson(`/rooms/${roomId}/start`);
 };
 
 export const addWord = async (word, gameId) => {
@@ -22,21 +22,21 @@ export const addWord = async (word, gameId) => {
 
 const interpretWords = (docs) => {
   console.log(`I'm being told to interpret words which are ${JSON.stringify(docs)}`);
-  const results = [];
-  docs.forEach(async qds => {
+  const results = docs.map(async qds => {
     const userRef = qds.get("createdBy");
     if (!userRef) {
-      // TODO(ecarrel): make sure that a return statement inside of a forEach does what I think it does... huh I think
-      // this doesn't work actually.
       return wrapError("Error getting createdBy field of word.");
     }
     const user = await userRef.get();
     const createdBy = user.get("name");
-    results.push({
+    return {
       word: qds.get("name"),
       createdBy,
-    });
+    };
   });
+  if (results.some(result => result.error !== undefined)) {
+    return results.find(result => result.error !== undefined)
+  }
   return wrapResult(results);
 };
 

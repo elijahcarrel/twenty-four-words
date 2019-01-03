@@ -67,3 +67,6 @@ buck-out/
 
 # secrets
 **/secrets.js
+
+# build files
+/build

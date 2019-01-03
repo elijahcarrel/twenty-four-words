@@ -1,10 +1,14 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Text } from 'react-native';
-import { CommonPage } from "common-components/common-page";
+import { CommonPage } from "~/common-components/common-page";
 
-class PlayContainerComponent extends React.Component {
-  render = () => {
+type Props = {
+  gameId: string,
+}
+
+class PlayContainerComponent extends React.Component<Props> {
+  render() {
     const { gameId } = this.props;
     return (
       <CommonPage>

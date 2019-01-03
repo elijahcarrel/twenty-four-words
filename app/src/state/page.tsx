@@ -1,4 +1,4 @@
-import { pageNames } from "page-names";
+import { pageNames } from "~/page-names";
 
 const actionTypes = {
   SET_PAGE: "page/SET_PAGE",

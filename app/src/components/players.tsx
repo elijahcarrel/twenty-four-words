@@ -1,22 +1,29 @@
 import React from "react";
 
 import { ListItem } from 'react-native-elements'
-import { getPlayers } from "state/players";
-import { PlayerAvatar } from "common-components/player-avatar";
+import { getPlayers } from "~/state/players";
+import { PlayerAvatar } from "~/common-components/player-avatar";
 import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
 
-class PlayersComponent extends React.Component {
+type Props = {
+  players: any,
+  myTeam: number,
+  getPlayers: Function,
+  gameId: string,
+}
+
+class PlayersComponent extends React.Component<Props> {
   constructor(props) {
     super(props);
   }
 
-  componentDidMount = () => {
+  componentDidMount() {
     const { getPlayers, gameId } = this.props;
     getPlayers(gameId);
-  };
+  }
 
-  render = () => {
+  render() {
     const { players, myTeam } = this.props;
     return (<View style={styles.playersContainer}>
       {
@@ -55,10 +62,14 @@ const mapStateToProps = ({
   },
   roomState: {
     roomId,
+  },
+  gameState: {
+    gameId,
   }
 }) => ({
   myTeam: team,
   roomId,
+  gameId,
 });
 const mapDispatchToProps = {
   getPlayers,

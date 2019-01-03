@@ -6,19 +6,26 @@ import {
   FlatList,
   View,
   Text,
-  ActivityIndicator,
   TextInput,
-  TouchableOpacity
 } from 'react-native';
 import { connect } from 'react-redux';
-import { addWord } from "state/game";
-import { LoadingPage } from "common-components/loading-page";
-import { CommonPage } from "common-components/common-page";
-import { HeaderText } from "common-components/header-text";
-import { SubheaderText } from "common-components/subheader-text";
-import { CommonButton } from "common-components/common-button";
+import { addWord } from "~/state/game";
+import { LoadingPage } from "~/common-components/loading-page";
+import { CommonPage } from "~/common-components/common-page";
+import { HeaderText } from "~/common-components/header-text";
+import { SubheaderText } from "~/common-components/subheader-text";
+import { CommonButton } from "~/common-components/common-button";
 
-class AddWordsContainerComponent extends Component {
+type Props = {
+  addWord: Function,
+  loading: any,
+  words: any,
+}
+type State = {
+  inputWord: string,
+}
+
+class AddWordsContainerComponent extends Component<Props, State> {
   constructor(props) {
     super(props);
 
@@ -43,7 +50,7 @@ class AddWordsContainerComponent extends Component {
   //   this.props.getData(); // Call our action
   // }
 
-  render = () => {
+  render() {
     const { loading, words } = this.props;
     if (loading) {
       console.log("Loading");
@@ -52,12 +59,19 @@ class AddWordsContainerComponent extends Component {
       );
     } else {
       console.log("Not loading");
+      // @ts-ignore
+      // @ts-ignore
+      // @ts-ignore
+      // @ts-ignore
+      // @ts-ignore
       return (
         <CommonPage>
           <HeaderText>Add words to the pot.</HeaderText>
           <View style={styles.wordInputContainer}>
+            // @ts-ignore TODO(ecarrel) fix this
             <TextInput
               style={styles.wordInput}
+              // @ts-ignore TODO(ecarrel) fix this
               textAlign="center"
               autoFocus
               onChangeText={(inputWord) => this.setState({ inputWord })}
@@ -75,14 +89,16 @@ class AddWordsContainerComponent extends Component {
           <FlatList
             ref='listRef'
             data={words}
-            renderItem={({ item: { word, createdBy }, index }) => (
+            // @ts-ignore TODO(ecarrel) fix this
+            renderItem={({ item: { word, createdBy } }) => (
+              // @ts-ignore TODO(ecarrel) fix this
               <View style={styles.row} textAlign={'center'}>
                 <Text style={styles.wordInRow}>
                   {word} (added by {createdBy})
                 </Text>
               </View>
             )}
-            keyExtractor={ (item, index) => index.toString() }
+            keyExtractor={ (_, index) => index.toString() }
           />
         </CommonPage>
       );

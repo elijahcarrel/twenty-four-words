@@ -1,13 +1,22 @@
 import React from "react";
 import { connect } from "react-redux";
-import { CommonButton } from 'common-components/common-button';
-import { joinRoom } from "state/room";
-import { CommonPage } from "common-components/common-page";
-import { HeaderText } from "common-components/header-text";
-import { CommonInput } from "common-components/common-input";
+import { CommonButton } from "~/common-components/common-button";
+import { joinRoom } from "~/state/room";
+import { CommonPage } from "~/common-components/common-page";
+import { HeaderText } from "~/common-components/header-text";
+import { CommonInput } from "~/common-components/common-input";
 import { ErrorText } from "../common-components/error-text";
 
-class JoinRoomContainerComponent extends React.Component {
+type Props = {
+  joinRoom: Function,
+  error?: string,
+}
+
+type State = {
+  roomCode: string,
+}
+
+class JoinRoomContainerComponent extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,8 +33,9 @@ class JoinRoomContainerComponent extends React.Component {
     }
   };
 
-  render = () => {
-    const { roomCode, error } = this.props;
+  render() {
+    const { error } = this.props;
+    const { roomCode } = this.state;
     return (
       <CommonPage>
         <HeaderText>Enter game code</HeaderText>

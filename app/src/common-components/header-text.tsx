@@ -4,6 +4,7 @@ import { StyleSheet, Text } from "react-native";
 export const HeaderText = props => {
   const { children } = props;
   return (
+    // @ts-ignore TODO(ecarrel) fix this
     <Text style={styles.headerText}>
       {children}
     </Text>

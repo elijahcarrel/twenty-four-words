@@ -1,4 +1,4 @@
-import * as server from "server/players";
+import * as server from "~/server/players";
 import { handleResponse } from "./utils/handle-response";
 
 const actionTypes = {

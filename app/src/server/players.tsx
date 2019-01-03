@@ -8,8 +8,7 @@ export const getPlayers = async (gameId) => {
   if (!docs) {
     return wrapError(`Error getting players for game ${gameId}.`);
   }
-  const results = [];
-  docs.forEach(async qds => {
+  const results = docs.map(async qds => {
     const userRef = qds.get("user");
     if (!userRef) {
       return wrapError(`Error getting user for player with id ${qds.get("id")}`);
@@ -18,12 +17,15 @@ export const getPlayers = async (gameId) => {
     if (!user) {
       return wrapError(`Error getting user with id ${userRef.id}`);
     }
-    results.push({
+    return {
       name: user.get("name"),
       team: qds.get("team"),
       id: qds.get("id"),
       userId: userRef.id,
-    });
+    };
   });
+  if (results.some(result => result.error !== undefined)) {
+    return results.find(result => result.error !== undefined)
+  }
   return wrapResult(results);
 };

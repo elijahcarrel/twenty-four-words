@@ -1,4 +1,4 @@
-export const handleResponse = (dispatch, successAction, failAction) => {
+export const handleResponse = (dispatch, successAction, failAction?: Function) => {
   return async ({ ok, result, error }) => {
     if (ok) {
       await dispatch(successAction(result));

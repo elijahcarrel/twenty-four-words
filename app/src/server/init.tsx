@@ -9,7 +9,7 @@ const authDomain = `${projectId}.firebaseapp.com`;
 export const apiURL = `https://${authDomain}/api/v1`;
 export let db, userId;
 
-export const initDbConnection = () => {
+export const initDbConnection = async () => {
   // Initialize Firebase
   const firebaseConfig = {
     apiKey: secrets.FIREBASE_API_KEY,
@@ -18,16 +18,16 @@ export const initDbConnection = () => {
     databaseURL: `https://${projectId}.firebaseio.com`,
     storageBucket: `${projectId}.appspot.com`
   };
-  
+
   const app = firebase.initializeApp(firebaseConfig);
   db = firebase.firestore(app);
-  
+
   const settings = {
     timestampsInSnapshots: true,
   };
   db.settings(settings);
-  
-  const { ok, result } = createUser();
+
+  const {ok, result} = await createUser();
   if (ok) {
     userId = result.userId;
   }

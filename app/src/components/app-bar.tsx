@@ -5,7 +5,7 @@ import {
   View,
   Text,
 } from 'react-native';
-import { PlayerAvatar } from "common-components/player-avatar";
+import { PlayerAvatar } from "~/common-components/player-avatar";
 
 const AppBarComponent = (props) => {
   const { name, team } = props;

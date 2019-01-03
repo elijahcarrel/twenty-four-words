@@ -1,8 +1,8 @@
 'use strict';
 import React from "react"
 
-import { AppBar } from "components/app-bar";
-import { pageComponents } from "page-components";
+import { AppBar } from "~/components/app-bar";
+import { pageComponents } from "~/page-components";
 
 import {
   StyleSheet,
