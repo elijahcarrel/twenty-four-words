@@ -3,7 +3,7 @@ import React from "react";
 import { CommonButton } from 'common-components/common-button';
 import { saveName } from "state/user";
 import { setPage } from "state/page";
-import { pageNames } from "app/src/page-names";
+import { pageNames } from "page-names";
 import { connect } from "react-redux";
 import { CommonPage } from "common-components/common-page";
 import { HeaderText } from "common-components/header-text";

@@ -13,7 +13,7 @@ const defaultState = {
 export const playersState = (state = defaultState, action) => {
   switch (action.type) {
     case actionTypes.SET_PLAYERS:
-      const { players } = action;
+      const { players} = action;
       return {
         ...state,
         players,

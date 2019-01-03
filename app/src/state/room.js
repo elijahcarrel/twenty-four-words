@@ -3,7 +3,7 @@ import { handleResponse } from "./utils/handle-response";
 
 import { setTeam } from "state/user";
 import { setPage } from "state/page";
-import { pageNames } from "app/src/page-names";
+import { pageNames } from "page-names";
 import { setGame } from "./game";
 
 const actionTypes = {

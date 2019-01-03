@@ -2,7 +2,7 @@
 import React from "react"
 
 import { AppBar } from "components/app-bar";
-import { pageComponents } from "app/src/page-components";
+import { pageComponents } from "page-components";
 
 import {
   StyleSheet,

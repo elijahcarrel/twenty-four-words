@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { setPage } from "state/page";
 import { createRoom } from "state/room";
 import { CommonButton } from 'common-components/common-button'
-import { pageNames } from "app/src/page-names";
+import { pageNames } from "page-names";
 import { CommonPage } from "common-components/common-page";
 
 const MainContainerComponent = (props) => {
