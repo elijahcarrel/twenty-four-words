@@ -24,13 +24,15 @@ const PlayerAvatarComponent = (props) => {
   } else if (team === myTeam) {
     iconStyle = styles.myTeam;
   }
-  return (<Avatar
-    size="small"
-    rounded
-    activeOpacity={0.7}
-    title={getInitials(name)}
-    iconStyle={iconStyle}
-  />);
+  return (
+    <Avatar
+      size="small"
+      rounded
+      activeOpacity={0.7}
+      title={getInitials(name)}
+      iconStyle={iconStyle}
+    />
+  );
 };
 
 const mapStateToProps = ({

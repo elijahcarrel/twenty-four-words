@@ -11,15 +11,12 @@
     "experimentalDecorators": true,
     "preserveConstEnums": true,
     "allowJs": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "moduleResolution":"Node",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./src/*"]
-    }
+    "baseUrl": "."
   },
   "filesGlob": [
     "typings/index.d.ts",
@@ -38,7 +35,8 @@
     "jest.config.js",
     "babel.config.js",
     "src/App",
-    "App.js"
+    "App.js",
+    "tspaths.config.js"
   ],
   "compileOnSave": false
 }

@@ -27,5 +27,3 @@ export const setPage = (page) => ({
   type: actionTypes.SET_PAGE,
   page,
 });
-
-console.log("In page.js and setPage is ", setPage);

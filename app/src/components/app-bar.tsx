@@ -13,15 +13,14 @@ const AppBarComponent = (props) => {
     <View style={styles.appBarContainer}>
       <Text style={styles.appNameText}># 24words</Text>
       {name &&
-        (<View style={styles.nameAndAvatar}>
-          {/*<View style={styles.nameTextContainer}>*/}
-            {/*<Text style={styles.nameText}>{name}</Text>*/}
-          {/*</View>*/}
-          <PlayerAvatar
-            name={name}
-            team={team}
-          />
-        </View>)}
+        (
+          <View style={styles.nameAndAvatar}>
+            <PlayerAvatar
+              name={name}
+              team={team}
+            />
+          </View>
+        )}
     </View>
   );
 };
