@@ -9,18 +9,18 @@ import { PlayerAvatar } from "~/common-components/player-avatar";
 
 const AppBarComponent = (props) => {
   const { name, team } = props;
+  const Avatar = name ? (
+    <View style={styles.nameAndAvatar}>
+      <PlayerAvatar
+        name={name}
+        team={team}
+      />
+    </View>
+  ) : null;
   return (
     <View style={styles.appBarContainer}>
       <Text style={styles.appNameText}># 24words</Text>
-      {name &&
-        (
-          <View style={styles.nameAndAvatar}>
-            <PlayerAvatar
-              name={name}
-              team={team}
-            />
-          </View>
-        )}
+      {Avatar}
     </View>
   );
 };
