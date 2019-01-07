@@ -7,7 +7,7 @@ import { pageNames } from "~/page-names";
 import { connect } from "react-redux";
 import { CommonPage } from "~/common-components/common-page";
 import { HeaderText } from "~/common-components/header-text";
-import { CommonInput } from "../common-components/common-input";
+import { CommonInput } from "~/common-components/common-input";
 
 type Props = {
   saveName: Function,

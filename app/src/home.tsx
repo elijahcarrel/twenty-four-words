@@ -1,19 +1,16 @@
-'use strict';
 import React from "react"
-
 import { AppBar } from "~/components/app-bar";
 import { pageComponents } from "~/page-components";
-
 import {
   StyleSheet,
   StatusBar,
   View,
 } from 'react-native';
-
 import { connect } from 'react-redux';
 
 const HomeComponent = (props) => {
   const { page } = props;
+  console.log("In home and page = ", page);
   const PageComponent = pageComponents[page];
   return (
     <View style={styles.homeContainer}>

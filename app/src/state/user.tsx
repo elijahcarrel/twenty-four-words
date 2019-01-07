@@ -22,7 +22,7 @@ export const userState = (state = defaultState, action) => {
   }
 };
 
-export const setName = (name) => ({
+export const setName = ({ name }: { name: String }) => ({
   type: actionTypes.SET_NAME,
   name,
 });
