@@ -1,9 +1,16 @@
-import * as server from "~/server/room";
+import * as server from "../server/room";
 import { handleResponse } from "./utils/handle-response";
-
-import { setPage } from "~/state/page";
-import { pageNames } from "~/page-names";
+import { setPage } from "./page";
+import { pageNames } from "../page-names";
 import { setGame } from "./game";
+import { User } from "../server/room";
+
+export type RoomState = {
+  roomCode: string,
+  roomId: string,
+  users: User[],
+  error: string,
+}
 
 const actionTypes = {
   SET_ROOM: "room/SET_ROOM",
@@ -18,7 +25,7 @@ const defaultState = {
   error: "",
 };
 
-export const roomState = (state = defaultState, action) => {
+export const roomState = (state = defaultState, action): RoomState => {
   switch (action.type) {
     case actionTypes.SET_ROOM: {
       const {game: {roomCode, roomId}} = action;

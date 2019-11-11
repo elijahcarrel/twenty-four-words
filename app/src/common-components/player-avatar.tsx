@@ -1,7 +1,12 @@
 import { Avatar } from "react-native-elements";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { connect } from "react-redux";
+import { useSelector} from "react-redux";
+
+type Props = {
+  name: string;
+  team: number;
+};
 
 const getInitials = (name) => {
   if (!name) {
@@ -15,8 +20,9 @@ const getInitials = (name) => {
   return initials;
 };
 
-const PlayerAvatarComponent = (props) => {
-  const { name, team, myTeam } = props;
+export const PlayerAvatar = (props: Props) => {
+  const { name, team } = props;
+  const myTeam = useSelector(state => state.playerState.team);
   let iconStyle = styles.otherTeam;
   // Must check if it equals -1 before checking if it equals myTeam because if both are -1 then it should be grey.
   if (team === -1) {
@@ -34,19 +40,6 @@ const PlayerAvatarComponent = (props) => {
     />
   );
 };
-
-const mapStateToProps = ({
-  playerState: {
-    team,
-  }
-}) => ({
-  myTeam: team,
-});
-
-export const PlayerAvatar = connect(
-  mapStateToProps,
-  null
-)(PlayerAvatarComponent);
 
 const styles = StyleSheet.create({
   otherTeam: {

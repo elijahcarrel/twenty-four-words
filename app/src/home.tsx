@@ -1,15 +1,15 @@
 import React from "react"
-import { AppBar } from "~/common-components/app-bar";
-import { pageComponents } from "~/page-components";
+import { AppBar } from "./common-components/app-bar";
+import { pageComponents } from "./page-components";
 import {
   StyleSheet,
   StatusBar,
   View,
 } from 'react-native';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-const HomeComponent = (props) => {
-  const { page } = props;
+export const Home = (props) => {
+  const page = useSelector(state => state.pageState.page);
   console.log("In home and page = ", page);
   const PageComponent = pageComponents[page];
   return (
@@ -19,23 +19,10 @@ const HomeComponent = (props) => {
         barStyle="light-content"
       />
       <AppBar />
-      {PageComponent && (<PageComponent fakeProp="hey" />)}
+      {PageComponent && (<PageComponent />)}
     </View>
   );
 };
-
-const mapStateToProps = ({
-  pageState: {
-    page,
-  },
-}) => ({
-  page,
-});
-
-export const Home = connect(
-  mapStateToProps,
-  null,
-)(HomeComponent);
 
 const styles = StyleSheet.create({
   homeContainer: {

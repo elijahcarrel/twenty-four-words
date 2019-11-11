@@ -1,14 +1,14 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import {
   StyleSheet,
   View,
   Text,
 } from 'react-native';
-import { PlayerAvatar } from "../common-components/player-avatar";
+import { PlayerAvatar } from "./player-avatar";
 
-const AppBarComponent = (props) => {
-  const { name, team } = props;
+export const AppBar = (props) => {
+  const { name, team } = useSelector(state => state.userState);
   const Avatar = name ? (
     <View style={styles.nameAndAvatar}>
       <PlayerAvatar
@@ -59,17 +59,3 @@ const styles = StyleSheet.create({
   //   color: '#ffffff',
   // }
 });
-
-const mapStateToProps = ({
-  userState: {
-    name,
-    team,
-  },
-}) => ({
-  name,
-  team,
-});
-export const AppBar = connect(
-  mapStateToProps,
-  null,
-)(AppBarComponent);

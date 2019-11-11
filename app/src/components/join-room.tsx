@@ -1,10 +1,10 @@
-import React from "react";
-import { connect } from "react-redux";
-import { CommonButton } from "~/common-components/common-button";
-import { joinRoom } from "~/state/room";
-import { CommonPage } from "~/common-components/common-page";
-import { HeaderText } from "~/common-components/header-text";
-import { CommonInput } from "~/common-components/common-input";
+import React, {useState} from "react";
+import { useDispatch, useSelector} from "react-redux";
+import { CommonButton } from "../common-components/common-button";
+import { joinRoom } from "../state/room";
+import { CommonPage } from "../common-components/common-page";
+import { HeaderText } from "../common-components/header-text";
+import { CommonInput } from "../common-components/common-input";
 import { ErrorText } from "../common-components/error-text";
 
 type Props = {
@@ -12,61 +12,30 @@ type Props = {
   error?: string,
 }
 
-type State = {
-  roomCode: string,
-}
+export const JoinRoomContainer = (props: Props) => {
+  const [roomCode, setRoomCode] = useState("");
+  const error = useSelector(state => state.roomState.error);
+  const dispatch = useDispatch();
 
-class JoinRoomContainerComponent extends React.Component<Props, State> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      roomCode: "",
-    };
-    this.submitRoomCode = this.submitRoomCode.bind(this);
-  };
-
-  submitRoomCode = () => {
-    const { joinRoom } = this.props;
-    const { roomCode } = this.state;
+  const submitRoomCode = () => {
     if (roomCode) {
-      joinRoom(roomCode)
+      dispatch(joinRoom(roomCode));
     }
   };
 
-  render() {
-    const { error } = this.props;
-    const { roomCode } = this.state;
-    return (
-      <CommonPage>
-        <HeaderText>Enter game code</HeaderText>
-        {error && (<ErrorText>{error}</ErrorText>)}
-        <CommonInput
-          onChangeText={(roomCode) => this.setState({ roomCode })}
-          onSubmitEditing={this.submitRoomCode}
-          value={roomCode}
-        />
-        <CommonButton
-          title="Go"
-          onPress={this.submitRoomCode}
-        />
-      </CommonPage>
-    );
-  }
-}
-
-const mapStateToProps = ({
-  roomState: {
-    error,
-  },
-}) => ({
-  error,
-});
-
-const mapDispatchToProps = {
-  joinRoom,
+  return (
+    <CommonPage>
+      <HeaderText>Enter game code</HeaderText>
+      {error && (<ErrorText>{error}</ErrorText>)}
+      <CommonInput
+        onChangeText={setRoomCode}
+        onSubmitEditing={submitRoomCode}
+        value={roomCode}
+      />
+      <CommonButton
+        title="Go"
+        onPress={this.submitRoomCode}
+      />
+    </CommonPage>
+  );
 };
-
-export const JoinRoomContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(JoinRoomContainerComponent);

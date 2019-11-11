@@ -1,5 +1,9 @@
-import * as server from "~/server/user";
+import * as server from "../server/user";
 import { handleResponse } from "./utils/handle-response";
+
+export type UserState = {
+  name: string;
+}
 
 const actionTypes = {
   SET_NAME: "user/SET_NAME",
@@ -9,7 +13,7 @@ const defaultState = {
   name: "",
 };
 
-export const userState = (state = defaultState, action) => {
+export const userState = (state = defaultState, action): UserState => {
   switch (action.type) {
     case actionTypes.SET_NAME:
       const { name } = action;

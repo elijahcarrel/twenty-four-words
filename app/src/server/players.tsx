@@ -1,6 +1,13 @@
 import { db } from "./init"
 import { wrapError, wrapResult } from "./utils/wrapping";
 
+export type Player = {
+  name: string;
+  team: number;
+  id: number;
+  userId: string;
+};
+
 export const getPlayers = async (gameId) => {
   const { docs } = await db.collection("players")
     .where("game", "==", `/game/${gameId}`)

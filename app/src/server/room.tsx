@@ -74,6 +74,11 @@ export const joinRoom = async (roomCode) => {
   return wrapResult({ roomId, roomCode });
 };
 
+export type User = {
+  name: string;
+  id: number;
+}
+
 const interpretUsers = (docs) => {
   return {
     ok: true,

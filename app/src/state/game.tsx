@@ -1,12 +1,22 @@
-import * as server from "~/server/game";
+import * as server from "../server/game";
 import { handleResponse } from "./utils/handle-response";
-import { pageNames } from "~/page-names";
+import { pageNames } from "../page-names";
 import { setPage } from "./page";
 
 const actionTypes = {
   SET_GAME: "game/SET_GAME",
   SET_WORDS: "game/SET_WORDS",
 };
+
+export type Word = {
+  word: string;
+  createdBy: string;
+}
+
+export type GameState = {
+  gameId: string;
+  words: Word[];
+}
 
 const defaultState = {
   gameId: "",
@@ -20,7 +30,7 @@ const defaultState = {
   }],
 };
 
-export const gameState = (state = defaultState, action) => {
+export const gameState = (state = defaultState, action): GameState => {
   switch (action.type) {
     case actionTypes.SET_GAME: {
       const { gameId } = action;

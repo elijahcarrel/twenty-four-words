@@ -22,10 +22,7 @@ export const initDbConnection = async () => {
   const app = firebase.initializeApp(firebaseConfig);
   db = firebase.firestore(app);
 
-  const settings = {
-    timestampsInSnapshots: true,
-  };
-  db.settings(settings);
+  db.settings({});
 
   const {ok, result} = await createUser();
   if (ok) {

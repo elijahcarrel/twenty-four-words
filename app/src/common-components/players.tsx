@@ -1,31 +1,25 @@
-import React from "react";
+import React, {useMemo} from "react";
 
 import { ListItem } from 'react-native-elements'
-import { getPlayers } from "~/state/players";
-import { PlayerAvatar } from "~/common-components/player-avatar";
+import { getPlayers } from "../state/players";
+import { PlayerAvatar } from "./player-avatar";
 import { StyleSheet, View } from "react-native";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 type Props = {
   players: any,
-  myTeam: number,
-  getPlayers: Function,
-  gameId: string,
 }
 
-class PlayersComponent extends React.Component<Props> {
-  constructor(props) {
-    super(props);
-  }
+export const Players = (props: Props) => {
+  const { players } = props;
+  const dispatch = useDispatch();
+  const myTeam = useSelector(state => state.playerState.team);
+  // const roomId = useSelector(state => state.roomState.roomId);
+  const gameId = useSelector(state => state.gameState.gameId);
+  useMemo(() => dispatch(getPlayers(gameId)), [dispatch]);
 
-  componentDidMount() {
-    const { getPlayers, gameId } = this.props;
-    getPlayers(gameId);
-  }
-
-  render() {
-    const { players, myTeam } = this.props;
-    return (<View style={styles.playersContainer}>
+  return (
+    <View style={styles.playersContainer}>
       {
         players.map(({ name, team = -1 }, index) => {
           let subtitle = "Opponent";
@@ -35,7 +29,7 @@ class PlayersComponent extends React.Component<Props> {
           } else if (team === myTeam) {
             subtitle = "Teammate";
           }
-  
+
           return (
             <ListItem
               key={index}
@@ -52,32 +46,9 @@ class PlayersComponent extends React.Component<Props> {
           );
         })
       }
-    </View>);
-  }
-}
-
-const mapStateToProps = ({
-  playerState: {
-    team,
-  },
-  roomState: {
-    roomId,
-  },
-  gameState: {
-    gameId,
-  }
-}) => ({
-  myTeam: team,
-  roomId,
-  gameId,
-});
-const mapDispatchToProps = {
-  getPlayers,
+    </View>
+  );
 };
-export const Players = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(PlayersComponent);
 
 const styles = StyleSheet.create({
   playersContainer: {

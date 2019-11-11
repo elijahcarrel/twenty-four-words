@@ -16,12 +16,7 @@
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "moduleResolution": "Node",
-    "baseUrl": ".",
-    "paths": {
-      "~/*": [
-        "./src/*"
-      ]
-    }
+    "baseUrl": "."
   },
   "filesGlob": [
     "typings/index.d.ts",
@@ -40,8 +35,7 @@
     "jest.config.js",
     "babel.config.js",
     "src/App",
-    "App.js",
-    "tspaths.config.js"
+    "App.js"
   ],
   "compileOnSave": false
 }

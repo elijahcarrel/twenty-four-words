@@ -1,4 +1,4 @@
-import { apiURL } from "~/server/init";
+import { apiURL } from "../init";
 
 const fetchJson = async (endpoint, obj = {}, method): Promise<{ error: any, result: any, ok: boolean }> => {
   // @ts-ignore TODO(ecarrel) fix this
