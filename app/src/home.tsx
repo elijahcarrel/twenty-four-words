@@ -1,5 +1,5 @@
 import React from "react"
-import { AppBar } from "~/components/app-bar";
+import { AppBar } from "~/common-components/app-bar";
 import { pageComponents } from "~/page-components";
 import {
   StyleSheet,

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { CommonButton } from "~/common-components/common-button";
-import { Players } from "~/components/players"
+import { Players } from "~/common-components/players"
 
 import { createRoom, subscribeToRoom, subscribeToUsers } from "~/state/room";
 import { startGame } from "~/state/game";
